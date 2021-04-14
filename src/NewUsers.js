@@ -12,8 +12,10 @@ async function getUsers() {
 
 function NewUsers() {
     const [userId, setUserId] = useState(null);
-    const { data: users, error, isLoading, reload } = useAsync({
-        promiseFn: getUsers
+
+    // 렌더링하는 시점이 아닌 사용자의 특정 인터랙션에 따라 API 를 호출하고 싶을 땐 promiseFn 대신 deferFn 을 사용하고, reload 대신 run 함수를 사용
+    const { data: users, error, isLoading, run } = useAsync({
+        deferFn: getUsers
     });
 
     if (isLoading)
@@ -23,7 +25,7 @@ function NewUsers() {
         return <div>에러가 발생했습니다.</div>;
 
     if (!users)
-        return <button onClick={reload}>불러오기</button>;
+        return <button onClick={run}>불러오기</button>;
 
     return (
         <>
@@ -37,7 +39,7 @@ function NewUsers() {
                 }
             </ul>
 
-            <button onClick={reload}>다시 불러오기</button>
+            <button onClick={run}>다시 불러오기</button>
             {userId && <User id={userId} />}
         </>
     );
